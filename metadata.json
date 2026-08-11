@@ -1,0 +1,6 @@
+{
+  "name": "Daymark",
+  "description": "Daily habit tracker with streak counter, progress visualizations, matrix view, consistency grid, and achievements.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
