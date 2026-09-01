@@ -29,8 +29,8 @@ const LEGACY_STORAGE_KEY_LOGS = 'habit_tracker_logs_v1';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<NavigationTab>('dashboard');
-  const [currentYear, setCurrentYear] = useState<number>(2026);
-  const [currentMonth, setCurrentMonth] = useState<number>(8); // August
+  const [currentYear, setCurrentYear] = useState<number>(() => new Date().getFullYear());
+  const [currentMonth, setCurrentMonth] = useState<number>(() => new Date().getMonth() + 1);
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isArchivedModalOpen, setIsArchivedModalOpen] = useState<boolean>(false);
 
