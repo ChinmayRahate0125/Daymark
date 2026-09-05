@@ -1,5 +1,5 @@
 import React from 'react';
-import { Achievement, AchievementTier, Habit, HabitLogs } from '../types';
+import { AchievementTier, Habit, HabitLogs } from '../types';
 import { ACHIEVEMENTS } from '../data/achievements';
 import { IconRenderer } from './IconRenderer';
 
@@ -18,23 +18,23 @@ const TIER_CONFIG: Record<
 > = {
   LEGENDARY: {
     label: 'LEGENDARY',
-    colorClass: 'text-[#FE9677]',
-    lineClass: 'from-[#FE9677] via-[#F64668]/50 to-transparent',
+    colorClass: 'text-purple-300',
+    lineClass: 'from-purple-500/40 via-purple-900/20 to-transparent',
   },
   EPIC: {
     label: 'EPIC',
-    colorClass: 'text-[#F64668]',
-    lineClass: 'from-[#F64668] via-[#984063]/50 to-transparent',
+    colorClass: 'text-zinc-200',
+    lineClass: 'from-zinc-400/40 via-zinc-800/20 to-transparent',
   },
   RARE: {
     label: 'RARE',
-    colorClass: 'text-[#984063]',
-    lineClass: 'from-[#984063] via-[#41436A]/50 to-transparent',
+    colorClass: 'text-zinc-400',
+    lineClass: 'from-zinc-500/40 via-zinc-900/20 to-transparent',
   },
   COMMON: {
     label: 'COMMON',
-    colorClass: 'text-indigo-300',
-    lineClass: 'from-[#41436A] via-[#41436A]/40 to-transparent',
+    colorClass: 'text-zinc-500',
+    lineClass: 'from-zinc-700/40 via-zinc-900/20 to-transparent',
   },
 };
 
@@ -72,21 +72,21 @@ export const AchievementsGrid: React.FC<AchievementsGridProps> = ({
   const tiers: AchievementTier[] = ['LEGENDARY', 'EPIC', 'RARE', 'COMMON'];
 
   return (
-    <div className="bg-[#121324] border border-[#1e2038] rounded-2xl p-6 shadow-xl w-full flex flex-col space-y-8">
+    <div className="bg-[#0d0e15] border border-white/[0.08] rounded-xl p-6 shadow-xl w-full flex flex-col space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#1c1e36] pb-5">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-white/[0.06] pb-5">
         <div>
-          <h2 className="text-xl font-bold text-white tracking-wide mb-1">
+          <h2 className="font-display text-xl font-bold text-white tracking-tight mb-1">
             Achievements
           </h2>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-zinc-400">
             {unlockedCount} / {totalCount} unlocked
           </p>
         </div>
 
-        {/* Overall Completion Percentage Badge */}
-        <div className="bg-[#41436A]/30 border border-[#41436A] text-[#FE9677] text-xs font-bold px-4 py-2 rounded-xl shadow-inner">
-          {percentComplete}% complete
+        {/* Completion Badge */}
+        <div className="bg-purple-950/50 border border-purple-500/30 text-purple-300 text-xs font-bold px-4 py-2 rounded-lg">
+          {percentComplete}% Unlocked
         </div>
       </div>
 
@@ -101,11 +101,11 @@ export const AchievementsGrid: React.FC<AchievementsGridProps> = ({
             <div key={tier} className="space-y-4">
               {/* Tier Divider Line */}
               <div className="flex items-center space-x-3">
-                <span className={`text-xs font-extrabold tracking-widest ${config.colorClass}`}>
+                <span className={`text-xs font-bold tracking-wider ${config.colorClass}`}>
                   {config.label}
                 </span>
                 <div className={`h-[1px] flex-1 bg-gradient-to-r ${config.lineClass}`} />
-                <span className="text-[11px] font-semibold text-gray-500">
+                <span className="text-[11px] font-semibold text-zinc-500">
                   {tierUnlocked}/{tierAchList.length}
                 </span>
               </div>
@@ -118,21 +118,21 @@ export const AchievementsGrid: React.FC<AchievementsGridProps> = ({
                       key={ach.id}
                       className={`relative flex flex-col items-center text-center p-4 rounded-xl border transition-all duration-200 group ${
                         ach.unlocked
-                          ? 'bg-[#181a33] border-[#984063]/60 shadow-md shadow-[#984063]/10 hover:border-[#F64668]'
-                          : 'bg-[#101120]/60 border-[#1a1c32] opacity-45 hover:opacity-65'
+                          ? 'bg-[#11121c] border-purple-500/30 shadow-md hover:border-purple-400'
+                          : 'bg-[#08090f]/60 border-white/[0.04] opacity-40 hover:opacity-60'
                       }`}
                     >
                       {/* Unlocked Dot Indicator */}
                       {ach.unlocked && (
-                        <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#FE9677] shadow-sm shadow-[#FE9677]" />
+                        <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-purple-400 shadow-sm" />
                       )}
 
                       {/* Icon */}
                       <div
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 transition-transform group-hover:scale-110 ${
+                        className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 transition-transform group-hover:scale-105 ${
                           ach.unlocked
-                            ? 'bg-gradient-to-br from-indigo-600 via-[#984063] to-[#F64668] text-white shadow-md'
-                            : 'bg-[#181a2e] text-gray-500'
+                            ? 'bg-purple-600 text-white shadow-sm border border-purple-400/30'
+                            : 'bg-zinc-900 text-zinc-600 border border-white/[0.04]'
                         }`}
                       >
                         <IconRenderer name={ach.icon} className="w-5 h-5" />
@@ -141,19 +141,19 @@ export const AchievementsGrid: React.FC<AchievementsGridProps> = ({
                       {/* Title */}
                       <h4
                         className={`text-xs font-bold mb-1 line-clamp-1 ${
-                          ach.unlocked ? 'text-white' : 'text-gray-400'
+                          ach.unlocked ? 'text-white' : 'text-zinc-400'
                         }`}
                       >
                         {ach.title}
                       </h4>
 
                       {/* Description */}
-                      <p className="text-[10px] text-gray-400 leading-tight line-clamp-2 mb-2">
+                      <p className="text-[10px] text-zinc-400 leading-tight line-clamp-2 mb-2">
                         {ach.description}
                       </p>
 
                       {/* Tier Tag */}
-                      <span className="mt-auto text-[9px] font-extrabold uppercase tracking-wider text-gray-500">
+                      <span className="mt-auto text-[9px] font-bold uppercase tracking-wider text-zinc-500">
                         {ach.tier}
                       </span>
                     </div>

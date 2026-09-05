@@ -4,7 +4,6 @@
  */
 
 import { useState, useEffect } from 'react';
-import confetti from 'canvas-confetti';
 import { Habit, HabitLogs, NavigationTab, CategoryId } from './types';
 import { INITIAL_HABITS, INITIAL_LOGS } from './data/initialData';
 import {
@@ -13,7 +12,6 @@ import {
   calculateMonthlyConsistency,
   formatDateKey,
 } from './utils/habitUtils';
-import { ACHIEVEMENTS } from './data/achievements';
 import { Sidebar } from './components/Sidebar';
 import { StatCards } from './components/StatCards';
 import { HabitMatrix } from './components/HabitMatrix';
@@ -81,39 +79,6 @@ export default function App() {
   const { currentStreak, longestStreak } = calculateStreaks(habits, logs);
   const totalTasks = calculateTotalTasks(logs);
   const monthlyConsistency = calculateMonthlyConsistency(currentYear, currentMonth, habits, logs);
-
-  // Confetti trigger when new achievement is unlocked
-  useEffect(() => {
-    const stats = {
-      currentStreak,
-      longestStreak,
-      totalTasks,
-      habits,
-      logs,
-      monthlyConsistency,
-    };
-
-    let newlyUnlocked = false;
-    ACHIEVEMENTS.forEach((ach) => {
-      const result = ach.checkUnlocked(stats);
-      if (result.unlocked) {
-        const key = `ach_unlocked_${ach.id}`;
-        if (!localStorage.getItem(key)) {
-          localStorage.setItem(key, 'true');
-          newlyUnlocked = true;
-        }
-      }
-    });
-
-    if (newlyUnlocked) {
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#F64668', '#FE9677', '#984063', '#6366f1', '#41436A'],
-      });
-    }
-  }, [currentStreak, longestStreak, totalTasks, habits, logs, monthlyConsistency]);
 
   // Month navigation
   const handleNavigateMonth = (direction: 'prev' | 'next') => {
@@ -218,7 +183,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex bg-[#090a10] text-gray-100 min-h-screen font-sans antialiased selection:bg-indigo-500 selection:text-white">
+    <div className="flex bg-[#06070a] bg-tech-grid text-zinc-100 min-h-screen font-sans antialiased selection:bg-purple-600 selection:text-white relative overflow-x-hidden">
       {/* Sidebar */}
       <Sidebar
         activeTab={activeTab}
@@ -228,15 +193,15 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 p-4 md:p-8 lg:p-10 overflow-y-auto max-w-[1600px] mx-auto">
+      <main className="flex-1 p-4 md:p-8 lg:p-10 overflow-y-auto max-w-[1600px] mx-auto z-10">
         {activeTab === 'dashboard' ? (
           <div className="space-y-8 w-full">
             {/* Header */}
             <div>
-              <h1 className="text-3xl font-extrabold text-white tracking-tight mb-1">
-                Your Journey
+              <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-1">
+                Daymark Habit Tracker
               </h1>
-              <p className="text-sm text-gray-400">Track your daily progress</p>
+              <p className="text-sm text-zinc-400">Track your daily progress</p>
             </div>
 
             {/* Top Stat Cards */}

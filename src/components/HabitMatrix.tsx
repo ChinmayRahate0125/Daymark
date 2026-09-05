@@ -47,53 +47,53 @@ export const HabitMatrix: React.FC<HabitMatrixProps> = ({
   const endOfMonth = formatDateKey(currentYear, currentMonth, getDaysInMonth(currentYear, currentMonth));
 
   const activeHabits = habits.filter((h) => {
-    // Archived habits must NEVER appear in the main active habit tracker
     if (h.archivedAt) return false;
-
     const createdKey = getHabitDateKey(h.createdAt);
     if (createdKey > endOfMonth) return false;
-
     return true;
   });
 
   const archivedCount = habits.filter((h) => !!h.archivedAt).length;
 
   return (
-    <div className="bg-[#121324] border border-[#1e2038] rounded-2xl p-4 sm:p-6 shadow-xl w-full flex flex-col space-y-6">
-      {/* Month Navigation & Action Buttons Bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="bg-[#0d0e15] border border-white/[0.08] rounded-xl p-4 sm:p-6 shadow-xl w-full flex flex-col space-y-6">
+      {/* Month Navigation & Action Control Bar */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.06]">
         {/* Month Picker */}
-        <div className="flex items-center space-x-4">
-          <button
-            onClick={() => onNavigateMonth('prev')}
-            className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-[#1f213a] transition-colors"
-            title="Previous Month"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <h2 className="text-xl font-bold text-white tracking-wide">
+        <div className="flex items-center space-x-3 sm:space-x-4">
+          <div className="flex items-center space-x-1 bg-[#13141f] p-1 rounded-lg border border-white/[0.08]">
+            <button
+              onClick={() => onNavigateMonth('prev')}
+              className="p-1.5 rounded text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-all"
+              title="Previous Month"
+            >
+              <ChevronLeft className="w-4 h-4 stroke-[1.75]" />
+            </button>
+            <button
+              onClick={() => onNavigateMonth('next')}
+              className="p-1.5 rounded text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-all"
+              title="Next Month"
+            >
+              <ChevronRight className="w-4 h-4 stroke-[1.75]" />
+            </button>
+          </div>
+
+          <h2 className="font-display text-lg sm:text-xl font-bold text-white tracking-wide">
             {MONTH_NAMES[currentMonth - 1]} {currentYear}
           </h2>
-          <button
-            onClick={() => onNavigateMonth('next')}
-            className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-[#1f213a] transition-colors"
-            title="Next Month"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
         </div>
 
-        {/* Action Buttons: Archived & Add Task */}
-        <div className="flex items-center space-x-3 w-full sm:w-auto justify-end">
+        {/* Action Buttons: Archived & Add Habit */}
+        <div className="flex items-center space-x-2.5 w-full sm:w-auto justify-end">
           {archivedCount > 0 && (
             <button
               onClick={onOpenArchivedModal}
-              className="flex items-center space-x-2 bg-[#181a2e] hover:bg-[#222543] text-gray-300 hover:text-white border border-[#232644] font-medium px-3.5 py-2.5 rounded-xl transition-all text-xs sm:text-sm"
-              title="View Archived Habits in Settings"
+              className="flex items-center space-x-2 bg-[#13141f] hover:bg-[#181a29] text-zinc-300 hover:text-white border border-white/[0.08] text-xs px-3.5 py-2 rounded-lg transition-all font-medium"
+              title="View Archived Habits"
             >
-              <Archive className="w-4 h-4 text-amber-400 shrink-0" />
+              <Archive className="w-3.5 h-3.5 text-purple-400 shrink-0" />
               <span className="hidden sm:inline">Archived</span>
-              <span className="bg-amber-500/20 text-amber-300 text-xs px-2 py-0.5 rounded-full font-bold border border-amber-500/30">
+              <span className="bg-purple-950 text-purple-300 text-[10px] px-1.5 py-0.2 rounded font-bold border border-purple-500/30">
                 {archivedCount}
               </span>
             </button>
@@ -101,46 +101,27 @@ export const HabitMatrix: React.FC<HabitMatrixProps> = ({
 
           <button
             onClick={onOpenAddModal}
-            className="flex items-center space-x-2 bg-gradient-to-r from-indigo-600 via-[#984063] to-[#F64668] hover:opacity-95 text-white font-medium px-5 py-2.5 rounded-xl shadow-lg shadow-[#F64668]/20 transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 text-xs sm:text-sm"
+            className="flex items-center space-x-2 bg-purple-600 hover:bg-purple-500 text-white font-medium px-4 py-2 rounded-lg text-xs transition-colors shadow-sm cursor-pointer"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 stroke-[2]" />
             <span>Add Task</span>
           </button>
         </div>
       </div>
 
-      {/* Main Continuous Calendar Grid */}
-      <div className="w-full relative">
-        {/* Continuous 1px Vertical Weekly Separator Lines Overlay */}
-        <div className="absolute inset-0 pointer-events-none flex items-stretch">
-          {/* Left spacer matching habit info column */}
-          <div className="w-32 sm:w-44 md:w-52 shrink-0 pr-2 sm:pr-4" />
-
-          {/* Right side container matching day columns flex row */}
-          <div className="flex-1 min-w-0 flex items-stretch justify-between">
-            {daysInMonth.map(({ dateKey }, idx) => {
-              const isWeekEnd = (idx + 1) % 7 === 0 && idx < daysInMonth.length - 1;
-              return (
-                <div
-                  key={`sep-${dateKey}`}
-                  className={`flex-1 min-w-0 relative ${isWeekEnd ? 'mr-1 sm:mr-2' : ''}`}
-                >
-                  {isWeekEnd && (
-                    <div className="absolute top-0 bottom-0 -right-[2.5px] sm:-right-[4.5px] w-[1px] bg-[#2A2D4A]/60" />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="flex flex-col space-y-2 relative z-10">
+      {/* Main Habit Grid */}
+      <div className="w-full relative overflow-x-auto pb-2">
+        <div className="flex flex-col space-y-1.5 relative z-10 min-w-[700px]">
           {/* Header Row: Days of Week and Day Numbers */}
-          <div className="flex items-center pb-1">
-            {/* Left Header Spacer for Habit Names */}
-            <div className="w-32 sm:w-44 md:w-52 shrink-0 pr-2 sm:pr-4" />
+          <div className="flex items-center pb-2 border-b border-white/[0.04]">
+            {/* Left Header Spacer for Habit Title */}
+            <div className="w-36 sm:w-48 md:w-56 shrink-0 pr-2 sm:pr-4 flex items-center justify-between">
+              <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                Habits
+              </span>
+            </div>
 
-            {/* Day Columns Grid - ONE continuous row */}
+            {/* Day Columns Header */}
             <div className="flex-1 min-w-0 flex items-center justify-between">
               {daysInMonth.map(({ dayNumber, dayLetter, dateKey }, idx) => {
                 const isToday = dateKey === todayKey;
@@ -150,17 +131,17 @@ export const HabitMatrix: React.FC<HabitMatrixProps> = ({
                   <div
                     key={dateKey}
                     className={`flex-1 flex flex-col items-center justify-center min-w-0 ${
-                      isWeekEnd ? 'mr-1 sm:mr-2' : ''
+                      isWeekEnd ? 'mr-1 sm:mr-1.5' : ''
                     }`}
                   >
-                    <span className="text-[8px] sm:text-[9px] md:text-[10px] font-semibold text-gray-500 uppercase mb-0.5 select-none">
+                    <span className="text-[9px] font-semibold text-zinc-500 uppercase mb-0.5 select-none">
                       {dayLetter}
                     </span>
                     <span
-                      className={`text-[9px] sm:text-[10px] md:text-xs font-semibold w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 max-w-full flex items-center justify-center rounded-sm sm:rounded-md transition-colors select-none ${
+                      className={`text-xs font-semibold w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded transition-colors select-none ${
                         isToday
-                          ? 'bg-gradient-to-tr from-indigo-600 to-[#984063] text-white font-bold shadow-md shadow-[#F64668]/20 ring-1 sm:ring-2 ring-[#FE9677]/40'
-                          : 'text-gray-400 hover:text-gray-200'
+                          ? 'bg-purple-600 text-white font-bold shadow-sm'
+                          : 'text-zinc-400 hover:text-zinc-200'
                       }`}
                     >
                       {dayNumber}
@@ -171,10 +152,10 @@ export const HabitMatrix: React.FC<HabitMatrixProps> = ({
             </div>
           </div>
 
-          {/* Habit Rows */}
-          <div className="space-y-2">
+          {/* Habit Rows List */}
+          <div className="space-y-1 pt-1">
             {activeHabits.length === 0 ? (
-              <div className="text-center py-12 text-gray-500 border border-dashed border-[#222542] rounded-xl">
+              <div className="text-center py-12 text-zinc-500 text-xs border border-dashed border-white/[0.08] rounded-xl bg-[#090a10]">
                 No active habits for this month. Click &quot;Add Task&quot; above to create a habit!
               </div>
             ) : (
@@ -184,46 +165,47 @@ export const HabitMatrix: React.FC<HabitMatrixProps> = ({
                 return (
                   <div
                     key={habit.id}
-                    className="flex items-center group/row p-1 sm:p-1.5 rounded-xl hover:bg-[#18192f]/50 transition-colors"
+                    className="flex items-center group/row p-1 sm:p-1.5 rounded-lg hover:bg-white/[0.02] transition-colors border border-transparent hover:border-white/[0.04]"
                   >
                     {/* Habit Info Left Column */}
-                    <div className="w-32 sm:w-44 md:w-52 shrink-0 flex items-center justify-between pr-2 sm:pr-4 min-w-0">
+                    <div className="w-36 sm:w-48 md:w-56 shrink-0 flex items-center justify-between pr-2 sm:pr-4 min-w-0">
                       <div className="flex items-center space-x-2 sm:space-x-3 overflow-hidden min-w-0">
-                        {/* Category Colored Icon Box */}
+                        {/* Category Box */}
                         <div
-                          className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center shrink-0 text-white"
-                          style={{ backgroundColor: catInfo.bgHex }}
+                          className="w-6 h-6 sm:w-7 sm:h-7 rounded-md flex items-center justify-center shrink-0 border shadow-sm transition-colors"
+                          style={{ backgroundColor: `${catInfo.bgHex}38`, borderColor: `${catInfo.bgHex}80` }}
+                          title={`Category: ${catInfo.label}`}
                         >
-                          <IconRenderer name={habit.icon || catInfo.iconName} className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-white" />
+                          <IconRenderer name={habit.icon || catInfo.iconName} className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white stroke-[2.2]" />
                         </div>
                         {/* Habit Title */}
                         <div className="flex flex-col min-w-0">
-                          <span className="text-xs sm:text-sm font-medium text-gray-200 truncate group-hover/row:text-white">
+                          <span className="text-xs sm:text-sm font-medium text-zinc-200 truncate group-hover/row:text-white transition-colors">
                             {habit.title}
                           </span>
                         </div>
                       </div>
 
-                      {/* Action Buttons: Edit / Replace / Archive */}
-                      <div className="opacity-0 group-hover/row:opacity-100 flex items-center space-x-1 transition-all shrink-0 ml-1">
+                      {/* Manage & Archive Buttons */}
+                      <div className="opacity-0 group-hover/row:opacity-100 flex items-center space-x-0.5 transition-opacity shrink-0 ml-1">
                         <button
                           onClick={() => onManageHabit(habit)}
-                          className="text-gray-500 hover:text-indigo-300 p-1 rounded hover:bg-[#20223f] transition-all"
+                          className="text-zinc-500 hover:text-purple-300 p-1 rounded hover:bg-white/[0.06] transition-colors"
                           title="Edit or Replace Habit"
                         >
                           <Settings className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => onArchiveHabit(habit.id)}
-                          className="text-gray-500 hover:text-rose-400 p-1 rounded hover:bg-[#20223f] transition-all"
-                          title="Archive Habit (Hide from tracker, preserve history)"
+                          className="text-zinc-500 hover:text-rose-400 p-1 rounded hover:bg-white/[0.06] transition-colors"
+                          title="Archive Habit"
                         >
                           <Archive className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>
 
-                    {/* Day Cells Right Columns - ONE continuous row */}
+                    {/* Day Completion Grid Cells */}
                     <div className="flex-1 min-w-0 flex items-center justify-between">
                       {daysInMonth.map(({ dateKey }, idx) => {
                         const isActive = isHabitActiveOnDate(habit, dateKey);
@@ -234,27 +216,27 @@ export const HabitMatrix: React.FC<HabitMatrixProps> = ({
                           <div
                             key={dateKey}
                             className={`flex-1 flex items-center justify-center min-w-0 ${
-                              isWeekEnd ? 'mr-1 sm:mr-2' : ''
+                              isWeekEnd ? 'mr-1 sm:mr-1.5' : ''
                             }`}
                           >
                             {isActive ? (
                               <button
                                 onClick={() => onToggleCell(habit.id, dateKey)}
-                                title={`${habit.title} - ${dateKey} (${isCompleted ? 'Completed' : 'Incomplete'})`}
-                                className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 max-w-full rounded-sm sm:rounded-md flex items-center justify-center transition-all duration-150 transform hover:scale-105 active:scale-95 ${
+                                title={`${habit.title} — ${dateKey} (${isCompleted ? 'Completed' : 'Incomplete'})`}
+                                className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center transition-all duration-150 transform hover:scale-105 active:scale-95 cursor-pointer ${
                                   isCompleted
-                                    ? 'bg-[#F64668] shadow-sm text-white font-bold'
-                                    : 'bg-[#181a2e] hover:bg-[#252848] border border-[#232644]'
+                                    ? 'bg-purple-600 border border-purple-400/40 text-white shadow-sm'
+                                    : 'bg-[#13141f] hover:bg-[#1a1c2b] border border-white/[0.1] hover:border-purple-500/40'
                                 }`}
                               >
-                                {isCompleted && <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 text-white stroke-[3]" />}
+                                {isCompleted && <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white stroke-[3]" />}
                               </button>
                             ) : (
                               <div
                                 title={`${habit.title} - Created on ${getHabitDateKey(habit.createdAt)}`}
-                                className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 max-w-full rounded-sm sm:rounded-md flex items-center justify-center bg-[#10111d]/40 border border-[#1a1c32]/30 text-gray-700 cursor-not-allowed select-none"
+                                className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center bg-[#090a10]/50 border border-white/[0.02] cursor-not-allowed select-none"
                               >
-                                <span className="text-[10px] text-gray-700/60 font-bold">•</span>
+                                <span className="text-[8px] text-zinc-700/60">•</span>
                               </div>
                             )}
                           </div>
@@ -270,13 +252,17 @@ export const HabitMatrix: React.FC<HabitMatrixProps> = ({
       </div>
 
       {/* Bottom Category Legend */}
-      <div className="flex flex-wrap items-center gap-6 pt-4 border-t border-[#1a1c32]">
+      <div className="flex flex-wrap items-center gap-6 pt-4 border-t border-white/[0.06]">
+        <span className="text-xs font-medium text-zinc-400">Categories</span>
         {(Object.keys(CATEGORIES) as CategoryId[]).map((catKey) => {
           const cat = CATEGORIES[catKey];
           return (
             <div key={catKey} className="flex items-center space-x-2">
-              <span className={`w-2.5 h-2.5 rounded-full ${cat.dotColor}`} />
-              <span className="text-xs font-medium text-gray-400">{cat.label}</span>
+              <span
+                className="w-2 h-2 rounded-full"
+                style={{ backgroundColor: cat.bgHex }}
+              />
+              <span className="text-xs text-zinc-400">{cat.label}</span>
             </div>
           );
         })}

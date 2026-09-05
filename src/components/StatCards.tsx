@@ -1,4 +1,5 @@
 import React from 'react';
+import { Flame, Trophy, Activity, CheckCircle2 } from 'lucide-react';
 
 interface StatCardsProps {
   currentStreak: number;
@@ -15,64 +16,74 @@ export const StatCards: React.FC<StatCardsProps> = ({
 }) => {
   const stats = [
     {
-      title: 'CURRENT STREAK',
+      label: 'CURRENT STREAK',
       value: `${currentStreak}d`,
-      subtitle: 'Keep it going 🔥',
-      colorClass: 'text-[#FE9677]',
-      borderLine: 'from-[#F64668] to-[#FE9677]',
-      glow: 'shadow-[#F64668]/10',
+      subtitle: 'Active daily sequence',
+      icon: Flame,
+      highlight: true,
     },
     {
-      title: 'LONGEST STREAK',
+      label: 'LONGEST STREAK',
       value: `${longestStreak}d`,
-      subtitle: 'Personal best',
-      colorClass: 'text-cyan-400',
-      borderLine: 'from-cyan-400/80 to-[#41436A]',
-      glow: 'shadow-cyan-500/5',
+      subtitle: 'Personal best streak',
+      icon: Trophy,
+      highlight: false,
     },
     {
-      title: 'AVG CONSISTENCY',
+      label: 'AVG CONSISTENCY',
       value: `${monthlyConsistency}%`,
-      subtitle: 'This month',
-      colorClass: 'text-[#F64668]',
-      borderLine: 'from-[#984063] to-[#F64668]',
-      glow: 'shadow-[#984063]/10',
+      subtitle: 'This month rate',
+      icon: Activity,
+      highlight: false,
     },
     {
-      title: 'TOTAL TASKS',
+      label: 'TOTAL TASKS',
       value: `${totalTasks}`,
-      subtitle: 'All time completed',
-      colorClass: 'text-emerald-400',
-      borderLine: 'from-emerald-400/80 to-[#41436A]',
-      glow: 'shadow-emerald-500/5',
+      subtitle: 'All-time completed',
+      icon: CheckCircle2,
+      highlight: false,
     },
   ];
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
-      {stats.map((stat, idx) => (
-        <div
-          key={idx}
-          className={`relative bg-[#121324] border border-[#1e2038] rounded-2xl p-5 overflow-hidden shadow-lg ${stat.glow} transition-all duration-300 hover:border-[#41436A]`}
-        >
-          {/* Top colored gradient line accent */}
+      {stats.map((stat, idx) => {
+        const IconComponent = stat.icon;
+        return (
           <div
-            className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${stat.borderLine}`}
-          />
+            key={idx}
+            className={`relative bg-[#0d0e15] border border-white/[0.08] rounded-xl p-5 overflow-hidden transition-all duration-200 hover:border-purple-500/40 group ${
+              stat.highlight ? 'border-purple-500/30' : ''
+            }`}
+          >
+            {/* Header Row */}
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-semibold tracking-wider text-zinc-400 uppercase">
+                {stat.label}
+              </span>
+              <div
+                className={`p-1.5 rounded-lg border ${
+                  stat.highlight
+                    ? 'bg-purple-950/50 border-purple-500/30 text-purple-400'
+                    : 'bg-zinc-900/60 border-white/[0.05] text-zinc-400'
+                }`}
+              >
+                <IconComponent className="w-4 h-4 stroke-[1.75]" />
+              </div>
+            </div>
 
-          <h3 className="text-[11px] font-semibold tracking-wider text-gray-400 uppercase mb-2">
-            {stat.title}
-          </h3>
+            {/* Main Value */}
+            <div className="font-display text-3xl lg:text-4xl font-bold tracking-tight text-white mb-2 group-hover:text-purple-200 transition-colors">
+              {stat.value}
+            </div>
 
-          <div className={`text-3xl lg:text-4xl font-extrabold tracking-tight mb-1.5 ${stat.colorClass}`}>
-            {stat.value}
+            {/* Subtitle */}
+            <p className="text-xs text-zinc-500 font-medium">
+              {stat.subtitle}
+            </p>
           </div>
-
-          <p className="text-xs text-gray-400 font-medium">
-            {stat.subtitle}
-          </p>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
